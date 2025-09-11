@@ -1,7 +1,7 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
 import ProductsScreen from "../screens/ProductsScreen";
 import ProductDetails from "../screens/ProductDetails";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 export type RootNavigatorParamList = {
   Home: undefined;
@@ -9,11 +9,11 @@ export type RootNavigatorParamList = {
   ProductDetails: { productId: string };
 };
 
-const Stack = createNativeStackNavigator<RootNavigatorParamList>();
+const Tab = createBottomTabNavigator<RootNavigatorParamList>();
 
 const RootNavigator = () => {
   return (
-    <Stack.Navigator
+    <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerStyle: {
@@ -21,22 +21,22 @@ const RootNavigator = () => {
         },
       }}
     >
-      <Stack.Screen
+      <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{ title: "Home" }}
       />
-      <Stack.Screen
+      <Tab.Screen
         name="Products"
         component={ProductsScreen}
         options={{ title: "Products" }}
       />
-      <Stack.Screen
+      <Tab.Screen
         name="ProductDetails"
         component={ProductDetails}
         options={{ title: "Products details" }}
       />
-    </Stack.Navigator>
+    </Tab.Navigator>
   );
 };
 
