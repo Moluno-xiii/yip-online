@@ -1,15 +1,14 @@
 import HomeScreen from "../screens/HomeScreen";
-import ProductsScreen from "../screens/ProductsScreen";
-import ProductDetails from "../screens/ProductDetails";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import ProductsNavigator from "./ProductsNavigator";
 
-export type RootNavigatorParamList = {
+export type RootTabParamList = {
   Home: undefined;
   Products: undefined;
-  ProductDetails: { productId: string };
 };
 
-const Tab = createBottomTabNavigator<RootNavigatorParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const RootNavigator = () => {
   return (
@@ -19,22 +18,29 @@ const RootNavigator = () => {
         headerStyle: {
           backgroundColor: "green",
         },
+        headerTintColor: "white",
+        tabBarActiveTintColor: "green",
       }}
     >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: "Home" }}
+        options={{
+          title: "Home",
+          tabBarIcon: ({ size, color }) => (
+            <Ionicons size={size} color={color} name={"home"} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Products"
-        component={ProductsScreen}
-        options={{ title: "Products" }}
-      />
-      <Tab.Screen
-        name="ProductDetails"
-        component={ProductDetails}
-        options={{ title: "Products details" }}
+        component={ProductsNavigator}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons size={size} color={color} name={"list"} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );
