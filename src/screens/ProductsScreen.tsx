@@ -1,29 +1,17 @@
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useLayoutEffect } from "react";
-import {
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableNativeFeedback,
-  View,
-} from "react-native";
+import { Alert, Button, FlatList, StyleSheet, Text, View } from "react-native";
+import EmptyState from "../components/ui/EmptyState";
 import HeaderIcon from "../components/ui/HeaderIcon";
-import { useAppSelector } from "../hooks/reduxHooks";
-import { ProductsStackParamList } from "../navigation/ProductsNavigator";
-import { Product, selectProducts } from "../slices/products";
-
-type ProductsScreenNavigationProp = NativeStackNavigationProp<
-  ProductsStackParamList,
-  "ProductsList"
->;
+import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
+import { ProductsScreenNavigationProp } from "../navigation/types";
+import { deleteAllProducts, selectProducts } from "../slices/products";
+import ProductInfo from "../components/ProductInfo";
 
 const ProductsScreen = () => {
   const navigation = useNavigation<ProductsScreenNavigationProp>();
-
   const products = useAppSelector(selectProducts);
-  console.log(products);
+  const dispatch = useAppDispatch();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -36,18 +24,46 @@ const ProductsScreen = () => {
     });
   }, []);
 
+  const triggerAlert = () => {
+    Alert.alert(
+      "Delete all products",
+      "Are you sure you want to delete all products ?",
+      [
+        {
+          text: "Cancel",
+        },
+        {
+          text: "Yes",
+          onPress: () => dispatch(deleteAllProducts()),
+        },
+      ]
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text style={{ color: "white" }}>Products screen</Text>
       {products.length < 1 ? (
-        <Text style={{ color: "tomato", fontSize: 22, textAlign: "center" }}>
-          No products added yet.
-        </Text>
-      ) : (
-        <FlatList
-          renderItem={({ item }) => <ProductInfo item={item} />}
-          data={products}
+        <EmptyState
+          onClick={() => navigation.navigate("AddProduct")}
+          emptyStateText="No products added yet"
+          buttonText="Add new product"
         />
+      ) : (
+        <View style={styles.products}>
+          <View style={styles.cta}>
+            <Text>Total Products : {products.length}</Text>
+            <Button
+              title="Delete all products"
+              color={"tomato"}
+              onPress={triggerAlert}
+            />
+          </View>
+          <FlatList
+            renderItem={({ item }) => <ProductInfo item={item} />}
+            data={products}
+          />
+        </View>
       )}
     </View>
   );
@@ -55,36 +71,16 @@ const ProductsScreen = () => {
 
 export default ProductsScreen;
 
-const ProductInfo = ({ item }: { item: Product }) => {
-  const navigation = useNavigation<ProductsScreenNavigationProp>();
-  return (
-    <TouchableNativeFeedback
-      onPress={() =>
-        navigation.navigate("ProductDetails", { productId: item.id })
-      }
-    >
-      <View style={{ flex: 1, marginBottom: 10 }}>
-        <Image
-          source={{ uri: item.imageUrl }}
-          style={{ height: 200, width: "100%" }}
-        />
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 18,
-            textTransform: "uppercase",
-          }}
-        >
-          {item.name}
-        </Text>
-      </View>
-    </TouchableNativeFeedback>
-  );
-};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
     marginHorizontal: 10,
   },
+  cta: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  products: { flex: 1, gap: 20 },
 });

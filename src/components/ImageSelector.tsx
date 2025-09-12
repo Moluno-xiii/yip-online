@@ -1,12 +1,11 @@
 import { Button, Image, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { SetStateAction } from "react";
 
 interface PropTypes {
   selectedImage: string | undefined;
-  setSelectedImage: React.Dispatch<SetStateAction<string | undefined>>;
+  handleImageSelect: (imageUrl: string) => void;
 }
-const ImageSelector = ({ setSelectedImage, selectedImage }: PropTypes) => {
+const ImageSelector = ({ handleImageSelect, selectedImage }: PropTypes) => {
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
@@ -16,7 +15,7 @@ const ImageSelector = ({ setSelectedImage, selectedImage }: PropTypes) => {
     });
 
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      handleImageSelect(result.assets[0].uri);
     } else {
       alert("You did not select any image.");
     }

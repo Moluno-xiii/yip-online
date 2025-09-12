@@ -1,16 +1,11 @@
-import { useState } from "react";
-import { StyleSheet, View, Text, TextInput, Button, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useRef, useState } from "react";
+import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { useSelector } from "react-redux";
 import ImageSelector from "../components/ImageSelector";
 import { useAppDispatch } from "../hooks/reduxHooks";
-import { addProduct } from "../slices/products";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { ProductsStackParamList } from "../navigation/ProductsNavigator";
-import { useNavigation } from "@react-navigation/native";
-
-type ProductDetailsNavigationProp = NativeStackNavigationProp<
-  ProductsStackParamList,
-  "ProductDetails"
->;
+import { ProductDetailsNavigationProp } from "../navigation/types";
+import { addProduct, selectProducts } from "../slices/products";
 
 const AddNewProductScreen = () => {
   const [productTitle, setProductTitle] = useState("");
@@ -18,9 +13,24 @@ const AddNewProductScreen = () => {
     undefined
   );
   const dispatch = useAppDispatch();
+  const products = useSelector(selectProducts);
   const navigation = useNavigation<ProductDetailsNavigationProp>();
 
+  const inputRef = useRef<TextInput>(null);
+
+  const handleImageSelect = (imageUri: string) => {
+    setSelectedImage(imageUri);
+    inputRef.current?.blur();
+  };
+
   const handleSubmit = () => {
+    if (products.length >= 5) {
+      alert(
+        "You've reached the maximum allowed capacity (5) for products, delete an existing product before you can add another."
+      );
+      return;
+    }
+
     if (productTitle.length < 1) {
       alert("Product name is required!");
       return;
@@ -54,10 +64,11 @@ const AddNewProductScreen = () => {
         style={styles.textInput}
         onChangeText={setProductTitle}
         value={productTitle}
+        ref={inputRef}
       />
       <ImageSelector
         selectedImage={selectedImage}
-        setSelectedImage={setSelectedImage}
+        handleImageSelect={handleImageSelect}
       />
       <Button title="Add Product" onPress={handleSubmit} color={"green"} />
     </View>

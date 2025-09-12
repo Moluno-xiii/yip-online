@@ -1,27 +1,19 @@
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text, Button } from "react-native";
-import { RootTabParamList } from "../navigation/RootNav";
-import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-
-type HomeScreenNavigationProp = BottomTabNavigationProp<
-  RootTabParamList,
-  "Home"
->;
+import { StyleSheet, Text, View } from "react-native";
+import CustomButton from "../components/ui/CustomButton";
+import { HomeScreenNavigationProp } from "../navigation/types";
 
 const HomeScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: "#444" }}>
-        Open up App.tsx to start working on your app!
-      </Text>
-      <Button
-        title="Products"
-        color={"green"}
-        onPress={() => navigation.navigate("Products")}
+      <Text style={styles.mainText}>Welcome, User.</Text>
+      <Text style={styles.subText}>Get started by adding a product.</Text>
+      <CustomButton
+        buttonText="Products"
+        onClick={() => navigation.navigate("Products")}
       />
       <StatusBar style="auto" />
     </View>
@@ -36,4 +28,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  mainText: { color: "#444", fontSize: 18 },
+  subText: { fontSize: 13 },
 });

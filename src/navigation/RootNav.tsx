@@ -2,11 +2,7 @@ import HomeScreen from "../screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import ProductsNavigator from "./ProductsNavigator";
-
-export type RootTabParamList = {
-  Home: undefined;
-  Products: undefined;
-};
+import { RootTabParamList } from "./types";
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 

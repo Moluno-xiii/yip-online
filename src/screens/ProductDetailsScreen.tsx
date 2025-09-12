@@ -1,18 +1,15 @@
-import { StyleSheet, View, Text, Button, Image } from "react-native";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { useLayoutEffect } from "react";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Alert, Button, Image, StyleSheet, Text, View } from "react-native";
 import HeaderIcon from "../components/ui/HeaderIcon";
-import { ProductsStackParamList } from "../navigation/ProductsNavigator";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
+import {
+  ProductDetailsNavigationProp,
+  ProductsStackParamList,
+} from "../navigation/types";
 import { removeProduct, selectProducts } from "../slices/products";
 
 type ProductDetailsRouteProp = RouteProp<
-  ProductsStackParamList,
-  "ProductDetails"
->;
-
-type ProductDetailsNavigationProp = NativeStackNavigationProp<
   ProductsStackParamList,
   "ProductDetails"
 >;
@@ -29,6 +26,25 @@ const ProductDetailsScreen = ({ route }: Props) => {
   const product = products.find((product) => product.id === productId);
   const navigation = useNavigation<ProductDetailsNavigationProp>();
 
+  const triggerConfirmDeleteAlert = (id: string) => {
+    Alert.alert(
+      "Confirm delete product",
+      "Are you sure you want to delete this product?",
+      [
+        {
+          text: "No",
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            dispatch(removeProduct(id));
+            navigation.goBack();
+          },
+        },
+      ]
+    );
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: `Product ${product ? product.name : "not found"}`,
@@ -38,9 +54,7 @@ const ProductDetailsScreen = ({ route }: Props) => {
             name="trash-bin"
             color={"red"}
             onPress={() => {
-              dispatch(removeProduct(product.id));
-              alert("Product deleted successfully!");
-              navigation.goBack();
+              triggerConfirmDeleteAlert(product.id);
             }}
           />
         ) : null,
@@ -68,19 +82,8 @@ const ProductDetailsScreen = ({ route }: Props) => {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: product.imageUrl }}
-        style={{ height: 200, width: "100%" }}
-      />
-      <Text
-        style={{
-          textAlign: "center",
-          fontSize: 18,
-          textTransform: "uppercase",
-        }}
-      >
-        {product.name}
-      </Text>
+      <Image source={{ uri: product.imageUrl }} style={styles.image} />
+      <Text style={styles.text}>{product.name}</Text>
     </View>
   );
 };
@@ -94,4 +97,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: 15,
   },
+  text: {
+    textAlign: "center",
+    fontSize: 18,
+    textTransform: "uppercase",
+  },
+  image: { height: 200, width: "100%" },
 });
