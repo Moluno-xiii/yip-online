@@ -6,7 +6,7 @@ import {
   Text,
   StyleSheet,
 } from "react-native";
-import { Product } from "../slices/products";
+import { Product } from "../store/slices/products";
 import { ProductsScreenNavigationProp } from "../navigation/types";
 
 const ProductInfo = ({ item }: { item: Product }) => {
@@ -19,7 +19,10 @@ const ProductInfo = ({ item }: { item: Product }) => {
     >
       <View style={styles.container}>
         <Image source={{ uri: item.imageUrl }} style={styles.image} />
-        <Text style={styles.text}>{item.name}</Text>
+        <View style={styles.subContainer}>
+          <Text style={styles.text}>{item.name}</Text>
+          <Text style={styles.text}>₦ {item.price.toLocaleString()}</Text>
+        </View>
       </View>
     </TouchableNativeFeedback>
   );
@@ -32,6 +35,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
     textTransform: "uppercase",
+    color: "white",
   },
   image: {
     height: 200,
@@ -39,6 +43,27 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginBottom: 10,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+    backgroundColor: "#f7f7f7",
+    paddingVertical: 20,
+    borderRadius: 6,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  subContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "green",
+    backgroundColor: "green",
+    paddingHorizontal: 5,
+    paddingVertical: 3,
+    marginTop: 6,
+    borderRadius: 4,
   },
 });

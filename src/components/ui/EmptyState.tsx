@@ -5,13 +5,19 @@ interface PropTypes {
   emptyStateText: string;
   buttonText: string;
   onClick: () => void;
+  color?: string;
 }
 
-const EmptyState = ({ emptyStateText, buttonText, onClick }: PropTypes) => {
+const EmptyState = ({
+  emptyStateText,
+  buttonText,
+  onClick,
+  color,
+}: PropTypes) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{emptyStateText}</Text>
-      <CustomButton onClick={onClick} buttonText={buttonText} />
+      <CustomButton onClick={onClick} buttonText={buttonText} color={color} />
     </View>
   );
 };

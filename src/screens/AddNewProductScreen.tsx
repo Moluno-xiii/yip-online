@@ -1,55 +1,55 @@
 import { useNavigation } from "@react-navigation/native";
-import { useRef, useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import { Alert, Keyboard, ScrollView, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 import ImageSelector from "../components/ImageSelector";
+import CustomButton from "../components/ui/CustomButton";
 import { useAppDispatch } from "../hooks/reduxHooks";
 import { ProductDetailsNavigationProp } from "../navigation/types";
-import { addProduct, selectProducts } from "../slices/products";
+import { addProduct, selectProducts } from "../store/slices/products";
+import { validateInput } from "../utils";
+import FormItem from "../components/FormItem";
 
 const AddNewProductScreen = () => {
   const [productTitle, setProductTitle] = useState("");
+  const [productPrice, setProductPrice] = useState("");
   const [selectedImage, setSelectedImage] = useState<undefined | string>(
     undefined
   );
+
   const dispatch = useAppDispatch();
   const products = useSelector(selectProducts);
   const navigation = useNavigation<ProductDetailsNavigationProp>();
 
-  const inputRef = useRef<TextInput>(null);
-
   const handleImageSelect = (imageUri: string) => {
+    Keyboard.dismiss();
     setSelectedImage(imageUri);
-    inputRef.current?.blur();
   };
 
   const handleSubmit = () => {
-    if (products.length >= 5) {
-      alert(
-        "You've reached the maximum allowed capacity (5) for products, delete an existing product before you can add another."
-      );
-      return;
-    }
+    const { error } = validateInput({
+      products,
+      productPrice,
+      productTitle,
+      selectedImage,
+    });
 
-    if (productTitle.length < 1) {
-      alert("Product name is required!");
-      return;
-    }
-
-    if (!selectedImage) {
-      alert("You haven't selected any Image.");
+    if (error) {
+      alert(error);
       return;
     }
 
     dispatch(
       addProduct({
         name: productTitle,
-        imageUrl: selectedImage,
+        imageUrl: selectedImage!,
         id: Date.now().toLocaleString(),
+        price: Number(Number(productPrice).toFixed(2)),
       })
     );
     setProductTitle("");
     setSelectedImage("");
+    setProductPrice("");
     Alert.alert("New product added successfully", "", [
       {
         text: "OK",
@@ -58,39 +58,33 @@ const AddNewProductScreen = () => {
     ]);
   };
   return (
-    <View style={styles.screen}>
-      <Text style={styles.label}>Product name</Text>
-      <TextInput
-        style={styles.textInput}
-        onChangeText={setProductTitle}
+    <ScrollView style={styles.screen}>
+      <FormItem
+        label="Product name"
         value={productTitle}
-        ref={inputRef}
+        setValue={setProductTitle}
+      />
+      <FormItem
+        label="Product price"
+        value={productPrice}
+        setValue={setProductPrice}
       />
       <ImageSelector
         selectedImage={selectedImage}
         handleImageSelect={handleImageSelect}
       />
-      <Button title="Add Product" onPress={handleSubmit} color={"green"} />
-    </View>
+      <CustomButton buttonText="Add Product" onClick={handleSubmit} />
+    </ScrollView>
   );
 };
 
 export default AddNewProductScreen;
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, marginHorizontal: 10, marginTop: 10, marginBottom: 20 },
-  label: {
-    fontSize: 22,
-    marginBottom: 5,
-  },
-  textInput: {
-    borderColor: "#ccc",
-    borderWidth: 1,
-    marginBottom: 15,
-    paddingVertical: 4,
-    paddingHorizontal: 2,
-    borderRadius: 5,
-    height: 35,
-    paddingLeft: 10,
+  screen: {
+    marginHorizontal: 10,
+    marginTop: 10,
+    marginBottom: 20,
+    flex: 1,
   },
 });

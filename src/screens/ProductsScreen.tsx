@@ -5,8 +5,9 @@ import EmptyState from "../components/ui/EmptyState";
 import HeaderIcon from "../components/ui/HeaderIcon";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import { ProductsScreenNavigationProp } from "../navigation/types";
-import { deleteAllProducts, selectProducts } from "../slices/products";
+import { deleteAllProducts, selectProducts } from "../store/slices/products";
 import ProductInfo from "../components/ProductInfo";
+import CustomButton from "../components/ui/CustomButton";
 
 const ProductsScreen = () => {
   const navigation = useNavigation<ProductsScreenNavigationProp>();
@@ -42,7 +43,6 @@ const ProductsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={{ color: "white" }}>Products screen</Text>
       {products.length < 1 ? (
         <EmptyState
           onClick={() => navigation.navigate("AddProduct")}
@@ -53,10 +53,10 @@ const ProductsScreen = () => {
         <View style={styles.products}>
           <View style={styles.cta}>
             <Text>Total Products : {products.length}</Text>
-            <Button
-              title="Delete all products"
-              color={"tomato"}
-              onPress={triggerAlert}
+            <CustomButton
+              buttonText="Delete all products"
+              color="tomato"
+              onClick={triggerAlert}
             />
           </View>
           <FlatList
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginVertical: 10,
   },
-  products: { flex: 1, gap: 20 },
+  products: { flex: 1, gap: 10 },
 });

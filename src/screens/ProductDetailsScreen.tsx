@@ -7,7 +7,8 @@ import {
   ProductDetailsNavigationProp,
   ProductsStackParamList,
 } from "../navigation/types";
-import { removeProduct, selectProducts } from "../slices/products";
+import { removeProduct, selectProducts } from "../store/slices/products";
+import EmptyState from "../components/ui/EmptyState";
 
 type ProductDetailsRouteProp = RouteProp<
   ProductsStackParamList,
@@ -47,7 +48,7 @@ const ProductDetailsScreen = ({ route }: Props) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: `Product ${product ? product.name : "not found"}`,
+      headerTitle: `${product ? product.name : "Product not found"}`,
       headerRight: () =>
         product ? (
           <HeaderIcon
@@ -63,27 +64,19 @@ const ProductDetailsScreen = ({ route }: Props) => {
 
   if (!product)
     return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>Product not found</Text>
-        <Button
-          title="Go Back"
-          color={"red"}
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <EmptyState
+        emptyStateText="Product not Found"
+        buttonText="Go Back"
+        onClick={() => navigation.goBack()}
+        color="tomato"
+      />
     );
 
   return (
     <View style={styles.container}>
       <Image source={{ uri: product.imageUrl }} style={styles.image} />
       <Text style={styles.text}>{product.name}</Text>
+      <Text style={styles.text}>₦ {product.price}</Text>
     </View>
   );
 };
@@ -102,5 +95,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textTransform: "uppercase",
   },
-  image: { height: 200, width: "100%" },
+  image: { minHeight: 200, width: "100%" },
 });

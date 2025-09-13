@@ -21,7 +21,7 @@ const ImageSelector = ({ handleImageSelect, selectedImage }: PropTypes) => {
     }
   };
   return (
-    <View style={{ flex: 1, alignItems: "center" }}>
+    <View style={{ flex: 1, alignItems: "center", marginBottom: 20 }}>
       {selectedImage ? (
         <Image
           source={{ uri: selectedImage }}
