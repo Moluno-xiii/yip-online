@@ -1,42 +1,44 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
-import ProductsScreen from "../screens/ProductsScreen";
-import ProductDetails from "../screens/ProductDetails";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import ProductsNavigator from "./ProductsNavigator";
+import { RootTabParamList } from "./types";
 
-export type RootNavigatorParamList = {
-  Home: undefined;
-  Products: undefined;
-  ProductDetails: { productId: string };
-};
-
-const Stack = createNativeStackNavigator<RootNavigatorParamList>();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const RootNavigator = () => {
   return (
-    <Stack.Navigator
+    <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerStyle: {
           backgroundColor: "green",
         },
+        headerTintColor: "white",
+        tabBarActiveTintColor: "green",
       }}
     >
-      <Stack.Screen
+      <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: "Home" }}
+        options={{
+          title: "Home",
+          tabBarIcon: ({ size, color }) => (
+            <Ionicons size={size} color={color} name={"home"} />
+          ),
+        }}
       />
-      <Stack.Screen
+      <Tab.Screen
         name="Products"
-        component={ProductsScreen}
-        options={{ title: "Products" }}
+        component={ProductsNavigator}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons size={size} color={color} name={"list"} />
+          ),
+        }}
       />
-      <Stack.Screen
-        name="ProductDetails"
-        component={ProductDetails}
-        options={{ title: "Products details" }}
-      />
-    </Stack.Navigator>
+    </Tab.Navigator>
   );
 };
 
