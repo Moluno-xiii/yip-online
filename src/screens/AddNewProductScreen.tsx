@@ -1,14 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { Alert, Keyboard, ScrollView, StyleSheet, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
+import FormItem from "../components/FormItem";
 import ImageSelector from "../components/ImageSelector";
 import CustomButton from "../components/ui/CustomButton";
 import { useAppDispatch } from "../hooks/reduxHooks";
 import { ProductDetailsNavigationProp } from "../navigation/types";
 import { addProduct, selectProducts } from "../store/slices/products";
 import { validateInput } from "../utils";
-import FormItem from "../components/FormItem";
 
 const AddNewProductScreen = () => {
   const [productTitle, setProductTitle] = useState("");
@@ -20,11 +20,6 @@ const AddNewProductScreen = () => {
   const dispatch = useAppDispatch();
   const products = useSelector(selectProducts);
   const navigation = useNavigation<ProductDetailsNavigationProp>();
-
-  const handleImageSelect = (imageUri: string) => {
-    Keyboard.dismiss();
-    setSelectedImage(imageUri);
-  };
 
   const handleSubmit = () => {
     const { error } = validateInput({
@@ -71,9 +66,11 @@ const AddNewProductScreen = () => {
       />
       <ImageSelector
         selectedImage={selectedImage}
-        handleImageSelect={handleImageSelect}
+        setSelectedImage={setSelectedImage}
       />
-      <CustomButton buttonText="Add Product" onClick={handleSubmit} />
+      <View>
+        <CustomButton buttonText="Add Product" onClick={handleSubmit} />
+      </View>
     </ScrollView>
   );
 };

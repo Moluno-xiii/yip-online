@@ -1,12 +1,14 @@
-import { Button, Image, View } from "react-native";
+import { Button, Image, Keyboard, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { SetStateAction } from "react";
 
 interface PropTypes {
   selectedImage: string | undefined;
-  handleImageSelect: (imageUrl: string) => void;
+  setSelectedImage: React.Dispatch<SetStateAction<string | undefined>>;
 }
-const ImageSelector = ({ handleImageSelect, selectedImage }: PropTypes) => {
+const ImageSelector = ({ setSelectedImage, selectedImage }: PropTypes) => {
   const pickImageAsync = async () => {
+    Keyboard.dismiss();
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsEditing: true,
@@ -15,7 +17,7 @@ const ImageSelector = ({ handleImageSelect, selectedImage }: PropTypes) => {
     });
 
     if (!result.canceled) {
-      handleImageSelect(result.assets[0].uri);
+      setSelectedImage(result.assets[0].uri);
     } else {
       alert("You did not select any image.");
     }
